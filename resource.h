@@ -21,12 +21,11 @@
 
 // http://service.steinberg.de/databases/plugin.nsf/plugIn?openForm
 // 4 chars, single quotes. At least one capital letter
-#define PLUG_UNIQUE_ID 'Dezy'
+#define PLUG_UNIQUE_ID 'ALMA'
 // make sure this is not the same as BUNDLE_MFR
-#define PLUG_MFR_ID 'Acme'
+#define PLUG_MFR_ID 'ALST'
 
 // ProTools stuff
-
 #if (defined(AAX_API) || defined(RTAS_API)) && !defined(_PIDS_)
   #define _PIDS_
   const int PLUG_TYPE_IDS[2] = {'EFN1', 'EFN2'};
@@ -60,7 +59,7 @@ instrument determined by PLUG _IS _INST
 #define KNOB_FN "resources/img/knob.png"
 
 // GUI default dimensions
-#define GUI_WIDTH 200
+#define GUI_WIDTH 400
 #define GUI_HEIGHT 200
 
 // on MSVC, you must define SA_API in the resource editor preprocessor macros as well as the c++ ones

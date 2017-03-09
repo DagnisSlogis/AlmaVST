@@ -3,11 +3,11 @@
 #include "IControl.h"
 #include "resource.h"
 
-const int kNumPrograms = 1;
+const int kNumPrograms = 5;
 
 enum EParams
 {
-  kGain = 0,
+  kFrequency = 0,
   kNumParams
 };
 
@@ -16,68 +16,72 @@ enum ELayout
   kWidth = GUI_WIDTH,
   kHeight = GUI_HEIGHT,
 
-  kGainX = 100,
-  kGainY = 100,
+  kFrequencyX = 100,
+  kFrequencyY = 100,
   kKnobFrames = 60
 };
 
 AlmaVST::AlmaVST(IPlugInstanceInfo instanceInfo)
-  :	IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo), mGain(1.)
+	: IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo), mFrequency(1.)
 {
-  TRACE;
+	TRACE;
 
-  //arguments are: name, defaultVal, minVal, maxVal, step, label
-  GetParam(kGain)->InitDouble("Gain", 50., 0., 100.0, 0.01, "%");
-  GetParam(kGain)->SetShape(2.);
+	//arguments are: name, defaultVal, minVal, maxVal, step, label
+	GetParam(kFrequency)->InitDouble("Frequency", 440.0, 50.0, 20000.0, 0.01, "Hz");
+	GetParam(kFrequency)->SetShape(2.0);
 
-  IGraphics* pGraphics = MakeGraphics(this, kWidth, kHeight);
-  pGraphics->AttachPanelBackground(&COLOR_RED);
+	IGraphics* pGraphics = MakeGraphics(this, kWidth, kHeight);
+	pGraphics->AttachPanelBackground(&COLOR_RED);
 
-  IBitmap knob = pGraphics->LoadIBitmap(KNOB_ID, KNOB_FN, kKnobFrames);
+	IBitmap knob = pGraphics->LoadIBitmap(KNOB_ID, KNOB_FN, kKnobFrames);
 
-  pGraphics->AttachControl(new IKnobMultiControl(this, kGainX, kGainY, kGain, &knob));
+	pGraphics->AttachControl(new IKnobMultiControl(this, kFrequencyX, kFrequencyY, kFrequency, &knob));
 
-  AttachGraphics(pGraphics);
+	AttachGraphics(pGraphics);
 
-  //MakePreset("preset 1", ... );
-  MakeDefaultPreset((char *) "-", kNumPrograms);
+	CreatePresets();
+	
 }
 
 AlmaVST::~AlmaVST() {}
 
 void AlmaVST::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
-  // Mutex is already locked for us.
+	// Mutex is already locked for us.
 
-  double* in1 = inputs[0];
-  double* in2 = inputs[1];
-  double* out1 = outputs[0];
-  double* out2 = outputs[1];
+	double *leftOutput = outputs[0];
+	double *rightOutput = outputs[1];
 
-  for (int s = 0; s < nFrames; ++s, ++in1, ++in2, ++out1, ++out2)
-  {
-    *out1 = *in1 * mGain;
-    *out2 = *in2 * mGain;
-  }
+	mOscillator.generate(leftOutput, nFrames);
+
+	// Copy left buffer into right buffer:
+	for (int s = 0; s < nFrames; ++s) {
+		rightOutput[s] = leftOutput[s];
+	}
 }
 
 void AlmaVST::Reset()
 {
   TRACE;
   IMutexLock lock(this);
+  mOscillator.setSampleRate(GetSampleRate());
 }
 
 void AlmaVST::OnParamChange(int paramIdx)
 {
-  IMutexLock lock(this);
+	IMutexLock lock(this);
 
-  switch (paramIdx)
-  {
-    case kGain:
-      mGain = GetParam(kGain)->Value() / 100.;
-      break;
+	switch (paramIdx)
+	{
+	case kFrequency:
+		mOscillator.setFrequency(GetParam(kFrequency)->Value());
+		break;
 
-    default:
-      break;
-  }
+	default:
+		break;
+	}
+}
+
+void AlmaVST::CreatePresets() {
+	MakePreset("clean", 440.0);
 }
