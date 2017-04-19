@@ -6,6 +6,12 @@
       <Filter>vst2</Filter>
     </ClCompile>
     <ClCompile Include="Oscillator.cpp" />
+    <ClCompile Include="MidiReceiver.cpp" />
+    <ClCompile Include="EnvelopeGenerator.cpp" />
+    <ClCompile Include="Filter.cpp" />
+    <ClCompile Include="Voice.cpp" />
+    <ClCompile Include="VoiceManager.cpp" />
+    <ClCompile Include="PolyBLEPOscillator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlmaVST.h" />
@@ -14,6 +20,14 @@
       <Filter>vst2</Filter>
     </ClInclude>
     <ClInclude Include="Oscillator.h" />
+    <ClInclude Include="MidiReceiver.h" />
+    <ClInclude Include="EnvelopeGenerator.h" />
+    <ClInclude Include="Delegate.h" />
+    <ClInclude Include="GallantSignal.h" />
+    <ClInclude Include="Filter.h" />
+    <ClInclude Include="Voice.h" />
+    <ClInclude Include="VoiceManager.h" />
+    <ClInclude Include="PolyBLEPOscillator.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AlmaVST.rc" />
