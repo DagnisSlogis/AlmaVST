@@ -8,8 +8,12 @@
 class Voice {
 public:
 	friend class VoiceManager;
-	Voice()
-		: mNoteNumber(-1),
+
+	// Voice constructor
+	Voice():
+		mOscillatorOneVoiceCount(1),
+		mOscillatorTwoVoiceCount(1),
+		mNoteNumber(-1),
 		mVelocity(0),
 		mFilterEnvelopeAmount(0.0),
 		mFilterLFOAmount(0.0),
@@ -18,29 +22,35 @@ public:
 		mOscillatorMix(0.5),
 		mLFOValue(0.0),
 		isActive(false) {
-		// Set myself free everytime my volume envelope has fully faded out of RELEASE stage:
-		mVolumeEnvelope.finishedEnvelopeCycle.Connect(this, &Voice::setFree);
-	};
+			// Set myself free everytime my volume envelope has fully faded out of RELEASE stage:
+			mVolumeEnvelope.finishedEnvelopeCycle.Connect(this, &Voice::setFree);
+		};
+
+	// Setter functions
+	inline void setOscillatorOneVoiceCount(int amount) { mOscillatorOneVoiceCount = amount; }
+	inline void setOscillatorTwoVoiceCount(int amount) { mOscillatorTwoVoiceCount = amount; }
 	inline void setFilterEnvelopeAmount(double amount) { mFilterEnvelopeAmount = amount; }
 	inline void setFilterLFOAmount(double amount) { mFilterLFOAmount = amount; }
 	inline void setOscillatorOnePitchAmount(double amount) { mOscillatorOnePitchAmount = amount; }
 	inline void setOscillatorTwoPitchAmount(double amount) { mOscillatorTwoPitchAmount = amount; }
 	inline void setOscillatorMix(double mix) { mOscillatorMix = mix; }
 	inline void setLFOValue(double value) { mLFOValue = value; }
-
 	inline void setNoteNumber(int noteNumber) {
 		mNoteNumber = noteNumber;
 		double frequency = 440.0 * pow(2.0, (mNoteNumber - 69.0) / 12.0);
 		mOscillatorOne.setFrequency(frequency);
 		mOscillatorTwo.setFrequency(frequency);
 	}
+
 	double nextSample();
 	void setFree();
 
 	void reset();
 private:
 	PolyBLEPOscillator mOscillatorOne;
+	int mOscillatorOneVoiceCount;
 	PolyBLEPOscillator mOscillatorTwo;
+	int mOscillatorTwoVoiceCount;
 	EnvelopeGenerator mVolumeEnvelope;
 	EnvelopeGenerator mFilterEnvelope;
 	Filter mFilter;

@@ -1,6 +1,7 @@
 #include "Oscillator.h"
 
-double Oscillator::mSampleRate = 44100.0;
+
+double Oscillator::mSampleRate = 44100.0; // Default, could be set to 48000.0 for better quality
 
 void Oscillator::setMode(OscillatorMode mode) {
 	mOscillatorMode = mode;

@@ -1,10 +1,14 @@
 #include "Voice.h"
 
 double Voice::nextSample() {
+	// Check if voice is active, returns muted output
 	if (!isActive) return 0.0;
 
-	double oscillatorOneOutput = mOscillatorOne.nextSample();
-	double oscillatorTwoOutput = mOscillatorTwo.nextSample();
+
+	// Gets next sample from bouth osc multiplied by the voices
+	double oscillatorOneOutput = mOscillatorOne.nextSample() * mOscillatorOneVoiceCount;
+	double oscillatorTwoOutput = mOscillatorTwo.nextSample() * mOscillatorTwoVoiceCount;
+	// Sums it up
 	double oscillatorSum = ((1 - mOscillatorMix) * oscillatorOneOutput) + (mOscillatorMix * oscillatorTwoOutput);
 
 	double volumeEnvelopeValue = mVolumeEnvelope.nextSample();

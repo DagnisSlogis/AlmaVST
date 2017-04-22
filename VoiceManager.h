@@ -2,10 +2,10 @@
 #define __AlmaVST__VoiceManager__
 
 #include "Voice.h"
-// #include <tr1/functional>
 #include <functional>
 
 class VoiceManager {
+
 public:
 	void onNoteOn(int noteNumber, int velocity);
 	void onNoteOff(int noteNumber, int velocity);
@@ -59,6 +59,12 @@ public:
 	}
 	static void setOscillatorMix(Voice& voice, double value) {
 		voice.setOscillatorMix(value);
+	}
+	static void setOscillatorOneVoiceCount(Voice& voice, double voiceCount) {
+		voice.setOscillatorOneVoiceCount(voiceCount);
+	}
+	static void setOscillatorTwoVoiceCount(Voice& voice, double voiceCount) {
+		voice.setOscillatorTwoVoiceCount(voiceCount);
 	}
 	static void setFilterCutoff(Voice& voice, double cutoff) {
 		voice.mFilter.setCutoff(cutoff);

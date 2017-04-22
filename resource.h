@@ -67,6 +67,8 @@ instrument determined by PLUG _IS _INST
 #define KNOB_ID				106
 #define KNOB_WHITE_ID		107
 #define FILTERMODE_ID		108
+#define VOICES_ID			109
+#define OCTAVES_ID			110
 
 // Image resource locations for this vst plugin.
 #define BG_FN				"resources/img/bg.png"
@@ -77,6 +79,8 @@ instrument determined by PLUG _IS _INST
 #define KNOB_FN				"resources/img/knobx71.png"
 #define KNOB_WHITE_FN		"resources/img/knobx71_white.png"
 #define FILTERMODE_FN		"resources/img/filtermode.png"
+#define VOICES_FN			"resources/img/voices.png"
+#define OCTAVES_FN			"resources/img/octave.png"
 
 // GUI default dimensions
 #define GUI_WIDTH 800

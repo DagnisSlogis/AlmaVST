@@ -18,11 +18,16 @@ const double parameterStep = 0.001;
 
 enum EParams
 {
-	// Oscillator Section:
+	// Oscillator 1 Section:
 	mOsc1Waveform = 0,
 	mOsc1PitchMod,
+	mOsc1Voices,
+	// mOsc1Octave,
+	// Oscillator 2 Section: 
 	mOsc2Waveform,
 	mOsc2PitchMod,
+	mOsc2Voices,
+	// mOsc2Octave,
 	//mOscMix,
 	// Filter Section:
 	mFilterMode,
@@ -58,8 +63,12 @@ typedef struct {
 const parameterProperties_struct parameterProperties[kNumParams] = {
 	{ "Osc 1 Waveform", 36, 36, 0, 0, 0 },
 	{ "Osc 1 Pitch Mod", 206, 25, 0.0, 0.0, 1.0 },
+	{ "Osc 1 Voices", 148, 56, 1, 1, 8},
+//	{ "Osc 1 Octave", 100, 100, 0, 0, 0},
 	{ "Osc 2 Waveform", 36, 126, 0, 0, 0 },
 	{ "Osc 2 Pitch Mod", 206, 115, 0.0, 0.0, 1.0 },
+	{ "Osc 2 Voices", 148, 146, 1, 1, 8},
+//	{ "Osc 2 Octave", 200, 200, 0, 0, 0 },
 	//{ "Osc Mix", 130, 61, 0.5, 0.0, 1.0 },
 	{ "Filter Mode", 414, 125, 0, 0, 0 },
 	{ "Filter Cutoff", 487, 115, 0.99, 0.0, 0.99 },
@@ -78,7 +87,7 @@ const parameterProperties_struct parameterProperties[kNumParams] = {
 	{ "Filter Env Attack", 30, 303, 0.01, 0.01, 10.0 },
 	{ "Filter Env Decay", 30, 382, 0.5, 0.01, 15.0 },
 	{ "Filter Env Sustain", 106, 303, 0.1, 0.001, 1.0 },
-	{ "Filter Env Release", 106, 382, 1.0, 0.01, 15.0 }
+	{ "Filter Env Release", 106, 382, 1.0, 0.01, 15.0 },
 };
 
 enum ELayout
@@ -176,10 +185,14 @@ void AlmaVST::CreateGraphics() {
 	IBitmap knobBitmap = pGraphics->LoadIBitmap(KNOB_ID, KNOB_FN, 71);
 	IBitmap knobWhiteBitmap = pGraphics->LoadIBitmap(KNOB_WHITE_ID, KNOB_WHITE_FN, 71);
 
+	// Number knobs
+	IBitmap octaveBitmap = pGraphics->LoadIBitmap(OCTAVES_ID, OCTAVES_FN, 49);
+	IBitmap voicesBitmap = pGraphics->LoadIBitmap(VOICES_ID, VOICES_FN, 8);
 
 	for (int i = 0; i < kNumParams; i++) {
 		const parameterProperties_struct& properties = parameterProperties[i];
 		IControl* control;
+		ISwitchControl* iSwitch;
 		IBitmap* graphic;
 		switch (i) {
 			// Switches:
@@ -187,7 +200,17 @@ void AlmaVST::CreateGraphics() {
 			graphic = &waveformRedBitmap;
 			control = new ISwitchControl(this, properties.x, properties.y, i, graphic);
 			break;
-
+		case mOsc1Voices:
+		case mOsc2Voices:
+			graphic = &voicesBitmap;
+			control = new IKnobMultiControl(this, properties.x, properties.y, i, graphic);
+			break;
+/*		case mOsc1Octave:
+		case mOsc2Octave:
+			graphic = &octaveBitmap;
+			control = new IKnobMultiControl(this, properties.x, properties.y, i, graphic);
+			break;
+*/
 		case mOsc2Waveform:
 		case mLFOWaveform:
 			graphic = &waveformBlueBitmap;
@@ -278,6 +301,12 @@ void AlmaVST::OnParamChange(int paramIdx)
 			break;
 			// Filter Section:
 			*/
+		case mOsc1Voices:
+			changer = bind(&VoiceManager::setOscillatorOneVoiceCount, _1, param->Value());
+			break;
+		case mOsc2Voices:
+			changer = bind(&VoiceManager::setOscillatorTwoVoiceCount, _1, param->Value());
+			break;
 		case mFilterMode:
 			changer = bind(&VoiceManager::setFilterMode, _1, static_cast<Filter::FilterMode>(param->Int()));
 			break;
